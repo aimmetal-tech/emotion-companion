@@ -1,2 +1,1 @@
-def main() -> None:
-    print("Hello from emotional-companion!")
+"""Competition training tools; GPU dependencies are loaded only when needed."""

@@ -1,7 +1,7 @@
 [project]
 name = "emotional-companion"
 version = "0.1.0"
-description = "Add your description here"
+description = "Budgeted QLoRA training for the emotional companion competition"
 readme = "README.md"
 authors = [
     { name = "Ruiqi Liu", email = "liuliurq@gmail.com" }
@@ -9,8 +9,31 @@ authors = [
 requires-python = ">=3.12"
 dependencies = []
 
+[project.optional-dependencies]
+training = [
+    "torch>=2.6,<2.7",
+    "transformers>=4.51,<4.58",
+    "peft>=0.14,<0.19",
+    "accelerate>=1.2,<2",
+    "bitsandbytes>=0.45,<0.50",
+    "huggingface-hub>=0.30,<1",
+    "safetensors>=0.4,<1",
+]
+download = ["huggingface-hub>=0.30,<1"]
+
 [project.scripts]
-emotional-companion = "emotional_companion:main"
+emotional-companion = "emotional_companion.cli:main"
+
+[dependency-groups]
+dev = ["ruff>=0.14,<1"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["official_dl"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "C4", "RUF"]
 
 [build-system]
 requires = ["uv_build>=0.12.21,<0.13.0"]

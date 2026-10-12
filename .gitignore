@@ -8,3 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Generated datasets, model weights, training runs and GPU accounting
+artifacts/
+models/
+runs/
+.cache/

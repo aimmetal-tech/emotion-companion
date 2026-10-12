@@ -1,0 +1,24 @@
+# Allowlist prevents local virtualenvs, weights, credentials and experiment outputs
+# from entering the build context. Official datasets are mounted at runtime.
+**
+!Dockerfile.training
+!.dockerignore
+!pyproject.toml
+!uv.lock
+!README.md
+!src/
+!src/**
+!configs/
+!configs/**
+!scripts/
+!scripts/*.sh
+!tests/
+!tests/**
+!official_dl/
+!official_dl/participant/
+!official_dl/participant/**
+!official_dl/test_inference_data.jsonl
+**/__pycache__/
+**/*.pyc
+official_dl/participant/model/
+official_dl/participant/model/**

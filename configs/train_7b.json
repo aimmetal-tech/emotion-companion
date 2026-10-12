@@ -1,0 +1,16 @@
+{
+  "seed": 42,
+  "max_length": 4096,
+  "num_train_epochs": 2,
+  "learning_rate": 0.0001,
+  "warmup_ratio": 0.03,
+  "batch_size": 1,
+  "gradient_accumulation_steps": 16,
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "lora_dropout": 0.05,
+  "eval_steps": 250,
+  "save_total_limit": 2,
+  "max_hours": 9,
+  "shutdown_margin_seconds": 180
+}
