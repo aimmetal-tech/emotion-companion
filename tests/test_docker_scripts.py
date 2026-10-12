@@ -62,6 +62,27 @@ class DockerLauncherTests(unittest.TestCase):
         self.assertIn("HF_HUB_OFFLINE=0", command)
         self.assertNotIn("--gpus", command)
 
+    def test_mirror_settings_are_forwarded_without_printing_token(self):
+        result = subprocess.run(
+            ["bash", str(SCRIPT), "--cpu", "download"],
+            env={
+                **os.environ,
+                "TRAINING_DRY_RUN": "1",
+                "HF_ENDPOINT": "https://hf-mirror.com",
+                "HF_HUB_DISABLE_XET": "1",
+                "HF_HUB_DISABLE_IMPLICIT_TOKEN": "1",
+                "HF_TOKEN": "test-only-not-a-real-token",
+            },
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        command = shlex.split(result.stdout)
+        for name in ("HF_ENDPOINT", "HF_HUB_DISABLE_XET", "HF_HUB_DISABLE_IMPLICIT_TOKEN", "HF_TOKEN"):
+            self.assertIn(name, command)
+            self.assertEqual(command[command.index(name) - 1], "--env")
+        self.assertNotIn("test-only-not-a-real-token", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

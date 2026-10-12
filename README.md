@@ -39,6 +39,30 @@ bash scripts/docker_training.sh budget run \
   python -m emotional_companion train --data artifacts/docker-tokens --output runs/docker-train
 ```
 
+若本机访问 Hugging Face 不稳定，可在下载时使用镜像站（保持原有固定 commit 和续传目录）：
+
+```bash
+HF_ENDPOINT=https://hf-mirror.com HF_HUB_DISABLE_XET=1 HF_HUB_DISABLE_IMPLICIT_TOKEN=1 \
+  bash scripts/docker_training.sh --cpu download
+```
+
+运行脚本会透传这些环境变量，不需要重建镜像；`HF_HUB_DISABLE_XET=1` 使用普通 HTTP 下载，
+`HF_HUB_DISABLE_IMPLICIT_TOKEN=1` 让公开模型下载不自动携带本机保存的 Hugging Face 令牌。
+镜像只用于下载，训练和编码仍从本地文件离线加载。
+
+本机已安装 hfd 时，也可按相同固定版本检查或补齐模型文件：
+
+```bash
+HF_ENDPOINT=https://hf-mirror.com hfd Qwen/Qwen2.5-7B-Instruct \
+  --revision a09a35458c702b33eeacc393d103063234e8bc28 \
+  --local-dir models/qwen2.5-7b-instruct \
+  --include '*.json' '*.safetensors' '*.txt' '*.model' '*.jinja' 'README.md' 'LICENSE' \
+  -x 4 -j 4
+```
+
+不要同时用两个下载器写同一模型目录。SDK 的 `.incomplete` 与 aria2 的续传记录格式不同，
+切换工具前应保留已有进度，不能直接把残缺缓存当作完整权重文件。
+
 `TRAINING_WORKSPACE` 可指定存放输出、权重和账本的主机目录；`TRAINING_DATA_DIR` 可指定
 官方训练数据目录；`TRAINING_NETWORK` 和 `TRAINING_OFFLINE` 可显式覆盖网络/离线设置。
 `TRAINING_DRY_RUN=1` 只打印运行命令，不创建目录或启动容器。需要访问不同 GPU 时设置

@@ -49,10 +49,14 @@ done
 COMMAND+=(--mount "type=bind,src=$OUTPUT_ROOT/.cache/docker-training,dst=/workspace/.cache"
   --mount "type=bind,src=$DATA_DIR,dst=/workspace/official_dl/train-val-dataset,readonly")
 
-# Keep optional Hub credentials out of the image and command-line values.
-if [[ -n "${HF_TOKEN:-}" ]]; then
-  COMMAND+=(--env HF_TOKEN)
-fi
+# Pass Hub settings at runtime so mirrors do not need an image rebuild. Passing
+# names rather than values also keeps optional tokens out of command-line values.
+for name in HF_TOKEN HF_ENDPOINT HF_HUB_DISABLE_XET HF_HUB_DISABLE_IMPLICIT_TOKEN \
+            HF_HUB_ETAG_TIMEOUT HF_HUB_DOWNLOAD_TIMEOUT; do
+  if [[ -n "${!name:-}" ]]; then
+    COMMAND+=(--env "$name")
+  fi
+done
 COMMAND+=("$IMAGE" "$@")
 
 if [[ "${TRAINING_DRY_RUN:-0}" == "1" ]]; then
