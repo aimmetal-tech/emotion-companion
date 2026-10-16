@@ -10,6 +10,7 @@
 emotional-companion/
 ├─ docs/                            # 官方赛事文档与辅助说明
 │  ├─ 平台实例部署与训练操作手册.md   # 平台公有镜像的环境检查、上传与训练对照命令
+│  ├─ releases/v0.0.1/             # 首版模型卡、Release 说明与平台上传测评步骤
 │  └─ official_docs/                # 赛事 PDF，赛事信息的主要依据
 ├─ official_dl/                     # 根据 PDF 链接下载的官方资料，已纳入 Git
 │  ├─ train-val-dataset/            # 原始训练集、验证集及 JSON Schema
@@ -34,6 +35,8 @@ emotional-companion/
 ├─ scripts/
 │  ├─ smoke_local.sh               # 本机微型模型测试
 │  ├─ install_missing_requirements.py # 平台补包；同名包跳过、禁用依赖自动安装
+│  ├─ package_release.py           # 官方推理部署包，固定 HF commit，不内置大权重
+│  ├─ download_release_model.py    # 下载公开固定模型并校验；始终不发送 Token
 │  ├─ docker_build_training.sh     # 构建训练镜像
 │  ├─ docker_training.sh           # 容器运行与持久化目录挂载
 │  └─ docker_export_training.sh    # 导出训练镜像归档并打印校验值
@@ -91,6 +94,8 @@ emotional-companion/
 | 4096-token 编码数据及损失掩码 | `artifacts/tokens-4096/` |
 | 2048-token 编码数据（显存不足时显式生成） | `artifacts/tokens-2048/` |
 | Docker 镜像归档及校验文件 | `artifacts/docker/` |
+| v0.0.1 部署归档及校验文件 | `artifacts/releases/v0.0.1/`（显式运行发布打包脚本生成） |
+| v0.0.1 合并模型与本机/HF 发布检查 | `models/companion-7b-v0.0.1/`、`artifacts/release-checks/` |
 | Qwen2.5-7B-Instruct 基础权重和 tokenizer | `models/qwen2.5-7b-instruct/` |
 | 主训练配置快照、状态和报告 | `runs/train/` |
 | 可恢复训练的检查点 | `runs/train/checkpoint-<步数>/` |
@@ -128,3 +133,16 @@ emotional-companion/
 这些内容不包含在训练镜像或 Git 仓库中。完整操作命令见 `README.md`。
 这条路线只适用于允许加载自定义镜像且能运行 Docker 的主机；平台大赛公有镜像采用已有容器
 内直接运行代码的路线，不需要上传训练镜像或运行 Docker-in-Docker。训练镜像不是最终参赛镜像。
+
+## 发布与平台提交边界
+
+`v0.0.1` 模型发布到公开 HF 仓库 `aimmetal-tech/emotion-companion-7b`，GitHub Release 附件
+是轻量部署包，不含完整权重、训练数据、优化器或任何令牌。模型卡和 Release 说明应区分
+量化适配器的快速评估、本机 BF16 导出检查、尚待平台验证的完整模型推理，不能混称官方成绩。
+`scripts/package_release.py` 必须传入固定 HF commit，拒绝覆盖已有输出；`start.sh` 和
+`run_inference.py` 在工程副本中保持原始内容，仅调整配置。完整平台说明见
+`docs/releases/v0.0.1/README.md`。
+
+平台上传大赛镜像可能直接进入测评并归档、覆盖文件，不能把“发布 GitHub/HF”当成比赛提交。
+将模型实际放在 `/root/participant/model/`，不要依赖 `/mnt/storage` 挂载或软链接随镜像保存。
+只有用户明确授权时才可点击上传/触发正式测评；文档或模型发布不自动授权消耗成功测评机会。

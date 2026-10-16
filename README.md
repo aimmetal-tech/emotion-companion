@@ -7,6 +7,12 @@ Qwen2.5-7B-Instruct，单卡 RTX 4090 24GB 做 QLoRA；当前官方启动脚本�
 平台公有镜像实例的环境检查、文件上传和训练命令，见
 [平台实例部署与训练操作手册](docs/平台实例部署与训练操作手册.md)。
 
+`v0.0.1` 的固定模型下载、官方入口自测、平台“上传大赛镜像”和提交测评步骤，见
+[首版部署与提交指南](docs/releases/v0.0.1/README.md)。完整权重托管在
+[Hugging Face](https://huggingface.co/aimmetal-tech/emotion-companion-7b)，
+[GitHub Release](https://github.com/aimmetal-tech/emotion-companion/releases/tag/v0.0.1) 提供轻量部署包。
+模型发布不等于比赛提交，最终 GPU 官方入口验证仍须在平台完成。
+
 ## 目录与代码入口
 
 | 路径 | 内容 |
@@ -16,8 +22,11 @@ Qwen2.5-7B-Instruct，单卡 RTX 4090 24GB 做 QLoRA；当前官方启动脚本�
 | `src/emotional_companion/` | 本项目数据处理、训练、评估、预算和导出代码 |
 | `configs/train_7b.json` | 默认两轮、4096-token、单卡 QLoRA 训练配置 |
 | `scripts/` | 本机冒烟、平台缺失依赖安装及 Docker 构建、运行、导出脚本 |
+| `scripts/package_release.py` | 根据已导出模型和固定 HF commit 生成轻量部署包 |
+| `scripts/download_release_model.py` | 固定模型下载与逐文件校验，不发送 Token |
 | `tests/` | 数据、指标、预算、运行脚本和安装脚本测试 |
 | `artifacts/` | 处理后的数据、编码数据、校验报告及可选 Docker 归档 |
+| `artifacts/releases/v0.0.1/` | 发布打包脚本生成的部署归档、校验和及解压目录 |
 | `models/` | 基础模型 `qwen2.5-7b-instruct/`、导出模型 `companion-7b/` |
 | `runs/` | CLI 默认的训练、评估、检查点、适配器和预算账本目录 |
 | `remote-dl/runs/` | 本机下载的服务器产物与盲评，使用时须显式指定路径 |
@@ -415,6 +424,21 @@ uv run --no-sync python -m emotional_companion score \
 正式入口只接收不含标签的输入。官方 3 条样例可先做功能检查，但不足以完成 100 条性能统计。
 本轮不自动创建付费实例、上传作品或消耗正式测评机会。PDF 的 `/participant/run_all.sh`
 与当前资料包的 `/root/participant/start.sh` 存在差异，发布前必须核对实际平台要求。
+
+## v0.0.1 发布打包
+
+发布工具在本机使用；将 `HF_COMMIT_SHA` 替换为 HF 上传、校验后确定的 40 位 commit。
+模型目录需包含完整导出文件、`export_manifest.json`、许可证、模型卡及已核验的 `SHA256SUMS`。
+
+```bash
+.venv/bin/python scripts/package_release.py \
+  --model models/companion-7b-v0.0.1 --model-revision HF_COMMIT_SHA
+```
+
+脚本从本机 `remote-dl/runs/` 收集训练/快速评估摘要，生成
+`artifacts/releases/v0.0.1/emotion-companion-v0.0.1-deploy.tar.gz` 和同名 `.sha256`。
+部署包不含权重，固定 HF commit 和逐文件哈希，保留原样的官方入口；需要下载模型后才能离线运行。
+GitHub/HF 的 `v0.0.1` 标签只对应模型和代码发布，不会触发比赛上传或扣成功测评次数。
 
 ## 开发检查
 

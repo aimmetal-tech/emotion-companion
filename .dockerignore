@@ -13,7 +13,7 @@
 !configs/**
 !scripts/
 !scripts/*.sh
-!scripts/install_missing_requirements.py
+!scripts/*.py
 !tests/
 !tests/**
 !official_dl/

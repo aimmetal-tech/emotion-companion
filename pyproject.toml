@@ -1,6 +1,6 @@
 [project]
 name = "emotional-companion"
-version = "0.1.0"
+version = "0.0.1"
 description = "Budgeted QLoRA training for the emotional companion competition"
 readme = "README.md"
 authors = [
