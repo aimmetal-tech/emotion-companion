@@ -62,7 +62,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc libc6-dev \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /opt/venv /opt/venv
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock requirements.txt README.md ./
 COPY src/ ./src/
 COPY configs/ ./configs/
 COPY scripts/ ./scripts/

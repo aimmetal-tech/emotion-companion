@@ -5,6 +5,7 @@
 !.dockerignore
 !pyproject.toml
 !uv.lock
+!requirements.txt
 !README.md
 !src/
 !src/**
@@ -12,6 +13,7 @@
 !configs/**
 !scripts/
 !scripts/*.sh
+!scripts/install_missing_requirements.py
 !tests/
 !tests/**
 !official_dl/
