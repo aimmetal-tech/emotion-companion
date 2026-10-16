@@ -3,6 +3,9 @@
 以官方 PDF 为赛事信息依据；`official_dl/` 原始数据和推理框架保持原样。首轮使用
 Qwen2.5-7B-Instruct，单卡 RTX 4090 24GB 做 QLoRA，最终在双卡环境验证离线提交。
 
+平台公有镜像实例的环境检查、文件上传和训练命令，见
+[平台实例部署与训练操作手册](docs/平台实例部署与训练操作手册.md)。
+
 ## Docker 训练镜像
 
 训练镜像的 Python/uv 基础镜像固定 digest，Python 依赖严格使用现有 `uv.lock`。

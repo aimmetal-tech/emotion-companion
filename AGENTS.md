@@ -9,6 +9,7 @@
 ```text
 emotional-companion/
 ├─ docs/                            # 官方赛事文档与辅助说明
+│  ├─ 平台实例部署与训练操作手册.md   # 平台公有镜像的环境检查、上传与训练对照命令
 │  └─ official_docs/                # 赛事 PDF，赛事信息的主要依据
 ├─ official_dl/                     # 根据 PDF 链接下载的官方资料，已纳入 Git
 │  ├─ train-val-dataset/            # 原始训练集、验证集及 JSON Schema
